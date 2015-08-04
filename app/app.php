@@ -55,41 +55,41 @@
             }
         }
         $output = "";
-        foreach ($cars_matching_search as $car) {
-            $car_make = $car->getMake();
-            $car_price = $car->getPrice();
-            $car_miles = $car->getMiles();
 
-            $output = $output . "<!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Your Car Dealership's Homepage</title>
-                    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
-                </head>
-                <body>
-                    <div class='container'>
-                        <h1>Your Car Dealership</h1>
-                        <ul>
-                            <?php
-                                if (empty($cars_matching_search)) {
-                                    echo 'Sorry, there are no cars available.';
-                                } else {
+        $output = $output . "<!DOCTYPE html>
+            <html>
+            <head>
+                <title>Your Car Dealership's Homepage</title>
+                <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
+            </head>
+            <body>
+                <div class='container'>
+                    <h1>Your Car Dealership</h1>
+                    ";
 
-                                        echo '<li><img class='img-rounded' src='$car->make_photo'></li>';
-                                        echo '<li> $car_make </li>';
-                                        echo '<ul>';
-                                            echo '<li> $car_price </li>';
-                                            echo '<li> Miles: $car_miles </li>';
-                                        echo'</ul>';
+            if (empty($cars_matching_search)) {
+                $output = $output . "<p>Sorry, there are no cars available.</p>";
+            } else {
+                foreach ($cars_matching_search as $car) {
+                    $car_make = $car->getMake();
+                    $car_price = $car->getPrice();
+                    $car_miles = $car->getMiles();
 
-                                    }
-                            ?>
-                        </ul>
+                    $output = $output . "<li><img class='img-rounded' src='$car->make_photo'></li>";
+                    $output = $output . "<li> $car_make </li>";
+                    $output = $output . "<ul>";
+                        $output = $output . "<li> $car_price </li>";
+                        $output = $output . "<li> Miles: $car_miles </li>";
+                    $output = $output ."</ul>";
+
+                }
+            }
+
+            $output = $output . "
                      </div>
                 </body>
                 </html>
             ";
-        }
         return $output;
     });
 
