@@ -5,20 +5,10 @@
     $app = new Silex\Application();
 
     $app->get("/", function() {
-        $porsche = new Car("2014 Porsche 911", 114991, 7861, "images/porsche.jpg");
-        $ford = new Car("2011 Ford F450", 55995, 14241, "images/ford.jpg");
-        $lexus = new Car("2013 Lexus RX 350", 44700, 20000, "images/lexus.jpg");
-        $mercedes = new Car("Mercedes Benz CLS550", 39900, 37979, "images/mercedes.jpg");
-        $cars = array($porsche, $ford, $lexus, $mercedes);
+            return "Home";
+    });
 
-        $cars_matching_search = array();
-        foreach ($cars as $car) {
-            if ($car->worthBuying($_GET["price"]) && ($car->worthBuying($_GET["miles"]))) {
-                array_push($cars_matching_search, $car);
-            }
-
-        }
-
+    /* CAR_FORM.HTML */
 
     $app->get("/new_car", function() {
         return "
@@ -31,7 +21,7 @@
             <body>
                 <div class='container'>
                     <h1>Find a Car!</h1>
-                    <form action='car.php'>
+                    <form action='/view_car'>
                         <div class='form-group'>
                             <label for='price'>Enter Maximum Price:</label>
                             <input id='price' name='price' class='form-control' type='number'>
@@ -48,9 +38,60 @@
         ";
     });
 
-    $app->("/view_car", function() {
+    /* END CAR_FORM.HTML */
 
-    })
+    $app->get("/view_car", function() {
+        $porsche = new Car("2014 Porsche 911", 114991, 7861, "images/porsche.jpg");
+        $ford = new Car("2011 Ford F450", 55995, 14241, "images/ford.jpg");
+        $lexus = new Car("2013 Lexus RX 350", 44700, 20000, "images/lexus.jpg");
+        $mercedes = new Car("Mercedes Benz CLS550", 39900, 37979, "images/mercedes.jpg");
+
+        $cars = array($porsche, $ford, $lexus, $mercedes);
+
+        $cars_matching_search = array();
+        foreach ($cars as $car) {
+            if ($car->worthBuying($_GET["price"]) && ($car->worthBuying($_GET["miles"]))) {
+                array_push($cars_matching_search, $car);
+            }
+        }
+        $output = "";
+        foreach ($cars_matching_search as $car) {
+            $car_make = $car->getMake();
+            $car_price = $car->getPrice();
+            $car_miles = $car->getMiles();
+
+            $output = $output . "<!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Your Car Dealership's Homepage</title>
+                    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
+                </head>
+                <body>
+                    <div class='container'>
+                        <h1>Your Car Dealership</h1>
+                        <ul>
+                            <?php
+                                if (empty($cars_matching_search)) {
+                                    echo 'Sorry, there are no cars available.';
+                                } else {
+
+                                        echo '<li><img class='img-rounded' src='$car->make_photo'></li>';
+                                        echo '<li> $car_make </li>';
+                                        echo '<ul>';
+                                            echo '<li> $car_price </li>';
+                                            echo '<li> Miles: $car_miles </li>';
+                                        echo'</ul>';
+
+                                    }
+                            ?>
+                        </ul>
+                     </div>
+                </body>
+                </html>
+            ";
+        }
+        return $output;
+    });
 
     return $app;
 
